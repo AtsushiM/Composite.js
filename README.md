@@ -99,7 +99,7 @@ composite.on('event-default', function(num, e) {
 composite.on('event-default', function(num, e) {
     e.preventDefault();
 });
-composite_child.fire('event-default', 1);
+composite.fire('event-default', 1);
 ```
 
 ### イベントを伝播させずに実行する
@@ -130,4 +130,7 @@ var ExtendComposite = Composite.extend({
     });
 ```
 
+## More
+このライブラリはCIR.jsのC.Ompositeを切り出したものです。
 
+http://atsushim.github.io/cir.js/#Omposite
