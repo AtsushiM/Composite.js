@@ -110,7 +110,7 @@ function Observer_removeChildExe(childs, i) {
 }
 function Observer_bubble() {
     var that = this,
-        args = arguments,
+        args = toArray(arguments || []),
         temp = that['only'].apply(that, args);
 
     if (FALSE !== temp && !(temp || {})._flgStopPropagation) {
@@ -187,8 +187,8 @@ Composite = Class['extend']({
     'one': function(key, func /* varless */, that, wrap) {
         /* var that = this; */
         that = this;
-        wrap = function(vars) {
-            func.apply(that, vars);
+        wrap = function() {
+            func.apply(that, arguments);
             that['off'](key, wrap);
         };
 

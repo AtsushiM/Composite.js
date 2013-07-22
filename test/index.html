@@ -5,8 +5,8 @@
 <title>Test | CIR.js</title>
 <link rel="stylesheet" href="lib/mocha.css">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<!-- <script src="../js/composite.js"></script> -->
-<script src="../js/composite.min.js"></script>
+<script src="../js/composite.js"></script>
+<!-- <script src="../js/composite.min.js"></script> -->
 
 <script src="lib/mocha.js"></script>
 <script src="lib/expect.js"></script>
@@ -17,85 +17,5 @@
 <div id="mocha"></div>
 
 <script src="./tests/Composite.js"></script>
-<script type="text/javascript">
-    var composite = new Composite;
-
-composite.on('event-name', function(arg1, arg2, arg3) {
-    // write code.
-});
-
-var eventaction = function(arg1, arg2, arg3) {
-        // write code.
-    };
-composite.one('event-name', eventaction);
-
-composite.off('event-name', eventaction);
-
-composite.off('event-name');
-
-composite.fire('event-name', 1, 2, 3);
-
-var composite_parent = new Composite,
-    composite_child = new Composite;
-
-composite_parent.addChild(composite_child);
-
-composite_parent.removeChild(composite_child);
-
-composite_parent.removeChild();
-
-// composite.fire === composite.bubble
-
-composite_child.on('event-bubble', function() {
-    // call 1.
-});
-composite_parent.on('event-bubble', function() {
-    // call 2.
-});
-composite_child.bubble('event-bubble');
-
-composite_child.on('event-capture', function() {
-    // call 2.
-});
-composite_parent.on('event-capture', function() {
-    // call 1.
-});
-composite_parent.capture('event-capture');
-
-composite_child.on('event-propagation', function(num1, num2, num3, e) {
-    e.stopPropagation();
-});
-composite_parent.on('event-propagation', function(num1, num2, num3, e) {
-    // don't execute.
-});
-composite_child.fire('event-propagation', 1, 2, 3);
-
-composite.on('event-default', function(num, e) {
-    // don't execute.
-});
-composite.on('event-default', function(num, e) {
-    e.preventDefault();
-});
-composite_child.fire('event-default', 1);
-
-composite_child.only('event-only');
-
-composite.dispose();
-
-var ExtendComposite = Composite.extend({
-        init: function(config) {
-            // write init code.
-        },
-        method1: function() {
-            // write method.
-        },
-        on: function() {
-            // override method.
-
-            // call super method.
-            this._super.apply(this, arguments);
-        },
-    });
-</script>
 </body>
 </html>
