@@ -15,7 +15,7 @@ class_fnTest = /0/.test(function() {
 Class = function() {};
 
 _is = function(key, vars) {
-  if (Object.prototype.toString.call(vars === '[object ' + key + ']')) {
+  if (Object.prototype.toString.call(vars) === '[object ' + key + ']') {
     return TRUE;
   } else {
     return FALSE;
