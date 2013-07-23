@@ -161,14 +161,14 @@ window['Composite'] = Class['extend']({
     that['on'](key, wrap);
   },
   'off': function(key, func) {
-    var i, observed, target;
+    var i, observed, target, val, _i;
     observed = this._observed;
     if (func) {
       target = observed[key];
       if (target) {
-        i = target.length;
-        while (i--) {
-          if (func === target[i] || func === target[i].original) {
+        for (i = _i = target.length - 1; _i >= 0; i = _i += -1) {
+          val = target[i];
+          if (func === val || func === val.original) {
             deleteArrayKey(target, i);
             if (target.length === 0) {
               delete observed[key];
@@ -184,31 +184,29 @@ window['Composite'] = Class['extend']({
   'fire': Observer_bubble,
   'bubble': Observer_bubble,
   'capture': function() {
-    var args, childs, i, temp;
+    var args, childs, val, _i;
     args = arguments;
     childs = this._childs;
-    i = childs.length;
     if (FALSE !== this['only'].apply(this, args)) {
-      while (i--) {
-        temp = childs[i];
-        temp['capture'].apply(temp, args);
+      for (_i = childs.length - 1; _i >= 0; _i += -1) {
+        val = childs[_i];
+        val['capture'].apply(val, args);
       }
     }
   },
   'only': function() {
-    var args, e, i, target, temp;
+    var args, e, target, val, _i;
     args = toArray(arguments);
     e = Observer_event(this, args);
     target = this._observed[e['type']] || [];
-    i = target.length;
     deleteArrayKey(args, 0);
     args[args.length] = e;
-    while (i--) {
-      temp = target[i];
-      if (temp) {
-        temp = temp.apply(this, args);
-        if (temp === FALSE || e._flgPreventDefault) {
-          return temp;
+    for (_i = target.length - 1; _i >= 0; _i += -1) {
+      val = target[_i];
+      if (val) {
+        val = val.apply(this, args);
+        if (val === FALSE || e._flgPreventDefault) {
+          return val;
         }
       }
     }
@@ -222,18 +220,19 @@ window['Composite'] = Class['extend']({
     this._childs.push(instance);
   },
   'removeChild': function(instance) {
-    var childs, i;
+    var childs, i, val, _i, _j;
     childs = this._childs;
-    i = childs.length;
     if (instance) {
-      while (i--) {
+      for (i = _i = childs.length - 1; _i >= 0; i = _i += -1) {
+        val = childs[i];
         if (childs[i] === instance) {
           Observer_removeChildExe(childs, i);
           return;
         }
       }
     } else {
-      while (i--) {
+      for (i = _j = childs.length - 1; _j >= 0; i = _j += -1) {
+        val = childs[i];
         Observer_removeChildExe(childs, i);
       }
     }

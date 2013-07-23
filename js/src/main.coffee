@@ -162,10 +162,8 @@ window['Composite'] = Class['extend']
             target = observed[key]
 
             if target
-                i = target.length
-
-                while i--
-                    if func == target[i] || func == target[i].original
+                for val, i in target by -1
+                    if func == val || func == val.original
                         deleteArrayKey target, i
 
                         if target.length == 0
@@ -182,31 +180,26 @@ window['Composite'] = Class['extend']
     'capture': ->
         args = arguments
         childs = @_childs
-        i = childs.length
 
         if FALSE !=  @['only'].apply @, args
-            while i--
-                temp = childs[i]
-                temp['capture'].apply temp, args
+            for val in childs by -1
+                val['capture'].apply val, args
 
         return
     'only': ->
         args = toArray arguments
         e = Observer_event @, args
         target = @_observed[e['type']] || []
-        i = target.length
 
         deleteArrayKey args, 0
         args[args.length] = e
 
-        while i--
-            temp = target[i]
+        for val in target by -1
+            if val
+                val = val.apply @, args
 
-            if temp
-                temp = temp.apply @, args
-
-                if temp == FALSE || e._flgPreventDefault
-                    return temp
+                if val == FALSE || e._flgPreventDefault
+                    return val
 
         return e
 
@@ -220,17 +213,16 @@ window['Composite'] = Class['extend']
         return
     'removeChild': (instance) ->
         childs = @_childs
-        i = childs.length
 
         if instance
-            while i--
+            for val, i in childs by -1
                 if childs[i] == instance
                     Observer_removeChildExe childs, i
 
                     return
 
         else
-            while i--
+            for val, i in childs by -1
                 Observer_removeChildExe childs, i
 
             return
