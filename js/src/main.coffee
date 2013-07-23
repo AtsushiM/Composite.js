@@ -5,7 +5,7 @@ class_fnTest = if /0/.test(-> 0; return;) then /\b_super\b/ else /.*/
 Class = ->
 
 _is = (key, vars) ->
-    if Object.prototype.toString.call vars == '[object ' + key + ']' then TRUE else FALSE
+    if Object.prototype.toString.call(vars) == '[object ' + key + ']' then TRUE else FALSE
 
 isString = (vars) ->
     _is 'String', vars
