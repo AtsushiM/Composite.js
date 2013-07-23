@@ -2,6 +2,9 @@
 HTML要素の様にイベントを伝播するオブザーバーを実現するライブラリ。
 
 
+[![Build Status](https://travis-ci.org/AtsushiM/Composite.js.png?branch=master)](https://travis-ci.org/AtsushiM/Composite.js)
+
+
 ## Usage
 ### Compositeインスタンスを作成する
 ```javascript
