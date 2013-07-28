@@ -1,3 +1,8 @@
+ns = do () ->
+    if typeof module == 'undefined'
+        return window
+    return module['exports']
+
 TRUE = true
 FALSE = false
 class_initializing = FALSE
@@ -110,7 +115,7 @@ Observer_event = (that, args) ->
 
     return e
 
-window['Composite'] = Class['extend']
+ns['Composite'] = Class['extend']
     'init': ->
         @_observed = {}
         @_childs = []
