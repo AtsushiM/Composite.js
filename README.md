@@ -38,7 +38,7 @@ composite.off('event-name');
 
 ### インスタンスに登録されたイベントを実行する
 ```javascript
-composite.fire('event-name', arg1, arg2, arg3);
+composite.emit('event-name', arg1, arg2, arg3);
 ```
 
 ### イベント伝播の対象を登録する
@@ -61,7 +61,7 @@ composite_parent.removeChild();
 
 ### イベントをバブリングで実行する
 ```javascript
-// composite.fire === composite.bubble
+// composite.emit === composite.bubble
 
 composite_child.on('event-bubble', function() {
     // call 1.
@@ -91,7 +91,7 @@ composite_child.on('event-propagation', function(num1, num2, num3, e) {
 composite_parent.on('event-propagation', function(num1, num2, num3, e) {
     // don't execute.
 });
-composite_child.fire('event-propagation', 1, 2, 3);
+composite_child.emit('event-propagation', 1, 2, 3);
 ```
 
 ### 実行中のイベント以前に同じイベントに登録された関数の実行を停止する
@@ -102,7 +102,7 @@ composite.on('event-default', function(num, e) {
 composite.on('event-default', function(num, e) {
     e.preventDefault();
 });
-composite.fire('event-default', 1);
+composite.emit('event-default', 1);
 ```
 
 ### イベントを伝播させずに実行する

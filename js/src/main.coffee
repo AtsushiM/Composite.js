@@ -180,7 +180,7 @@ ns['Composite'] = Class['extend']
 
         return delete observed[key]
 
-    'fire': Observer_bubble
+    'emit': Observer_bubble
     'bubble': Observer_bubble
     'capture': ->
         args = arguments

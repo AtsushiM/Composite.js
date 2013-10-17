@@ -103,10 +103,10 @@ describe('Compositeは', function() {
             count += 3;
         });
 
-        composite.fire('test');
+        composite.emit('test');
         expect(count).to.be(2);
 
-        composite.fire('test1');
+        composite.emit('test1');
         expect(count).to.be(5);
     });
 
@@ -119,14 +119,14 @@ describe('Compositeは', function() {
             };
 
         composite.one('one', args.one);
-        composite.fire('one');
-        composite.fire('one');
+        composite.emit('one');
+        composite.emit('one');
 
         expect(count).to.be(1);
 
         composite.one('one', args.one);
         composite.off('one', args.one);
-        composite.fire('one');
+        composite.emit('one');
 
         expect(count).to.be(1);
     });
@@ -140,12 +140,12 @@ describe('Compositeは', function() {
         composite.on('test', dammy1);
         composite.off('test');
 
-        composite.fire('test');
+        composite.emit('test');
 
         expect(count).to.be(0);
     });
 
-    it('fire()でイベントを発火する', function() {
+    it('emit()でイベントを発火する', function() {
         var ret1 = 0,
             dammy1 = function() {
                 ret1++;
@@ -158,24 +158,24 @@ describe('Compositeは', function() {
         composite.on('test1', dammy1);
         composite.on('test2', dammy2);
 
-        composite.fire('test1');
+        composite.emit('test1');
 
         expect(ret1).to.be(1);
         expect(ret2).to.be(0);
 
-        composite.fire('test2');
+        composite.emit('test2');
 
         expect(ret1).to.be(1);
         expect(ret2).to.be(1);
 
         composite.on('test1', dammy2);
 
-        composite.fire('test1');
+        composite.emit('test1');
 
         expect(ret1).to.be(2);
         expect(ret2).to.be(2);
 
-        composite.fire('test2');
+        composite.emit('test2');
 
         expect(ret1).to.be(2);
         expect(ret2).to.be(3);
@@ -187,11 +187,11 @@ describe('Compositeは', function() {
             expect(arg3).to.be(3);
         });
 
-        composite.fire('test3', 1, 2, 3);
+        composite.emit('test3', 1, 2, 3);
     });
 
-    it('bubble()はfireのエイリアスである', function() {
-        expect(composite.fire).to.be(composite.bubble);
+    it('bubble()はemitのエイリアスである', function() {
+        expect(composite.emit).to.be(composite.bubble);
     });
 
     it('addChild(instance)はCompositeのインスタンスを子供として登録する。', function() {
@@ -215,7 +215,7 @@ describe('Compositeは', function() {
             ret.push(2);
         });
 
-        child2.fire('test', 123);
+        child2.emit('test', 123);
 
         expect(ret).to.eql([2, 1, 0]);
     });
@@ -269,12 +269,12 @@ describe('Compositeは', function() {
 
         composite.removeChild(child1);
 
-        child2.fire('test', 123);
+        child2.emit('test', 123);
 
         expect(ret).to.eql([2, 1]);
 
         child1.removeChild();
-        child2.fire('test', 123);
+        child2.emit('test', 123);
 
         expect(ret).to.eql([2, 1, 2]);
     });
@@ -338,7 +338,7 @@ describe('Compositeは', function() {
             ret.push(4);
         });
 
-        child2.fire('test', 123);
+        child2.emit('test', 123);
         expect(ret).to.eql([4, 3]);
 
         ret = [];
