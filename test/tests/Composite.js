@@ -145,7 +145,7 @@ describe('Compositeは', function() {
         expect(count).to.be(0);
     });
 
-    it('emit()でイベントを発火する', function() {
+    it('emit()でイベントを発火する', function(done) {
         var ret1 = 0,
             dammy1 = function() {
                 ret1++;
@@ -153,7 +153,8 @@ describe('Compositeは', function() {
             ret2 = 0,
             dammy2 = function() {
                 ret2++;
-            };
+            },
+            isEnd = false;
 
         composite.on('test1', dammy1);
         composite.on('test2', dammy2);
@@ -180,14 +181,17 @@ describe('Compositeは', function() {
         expect(ret1).to.be(2);
         expect(ret2).to.be(3);
 
-        composite.on('test3', function(arg1, arg2, arg3, ev) {
+        composite.on('test3', function(ev, arg1, callback) {
             expect(ev).to.be.a('object');
             expect(arg1).to.be(1);
-            expect(arg2).to.be(2);
-            expect(arg3).to.be(3);
+            isEnd = true;
         });
 
-        composite.emit('test3', 1, 2, 3);
+        composite.emit('test3', 1, function() {
+            if (isEnd) {
+                done();
+            }
+        });
     });
 
     it('bubble()はemitのエイリアスである', function() {
@@ -202,22 +206,22 @@ describe('Compositeは', function() {
         composite.addChild(child1);
         child1.addChild(child2);
 
-        composite.on('test', function(num) {
+        composite.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(0);
         });
-        child1.on('test', function(num) {
+        child1.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(1);
         });
-        child2.on('test', function(num) {
+        child2.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(2);
         });
 
-        child2.emit('test', 123);
-
-        expect(ret).to.eql([2, 1, 0]);
+        child2.emit('test', 123, function() {
+            expect(ret).to.eql([2, 1, 0]);
+        });
     });
 
     it('capture()は親から子にイベントを伝播する', function() {
@@ -228,22 +232,22 @@ describe('Compositeは', function() {
         composite.addChild(child1);
         child1.addChild(child2);
 
-        composite.on('test', function(num) {
+        composite.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(0);
         });
-        child1.on('test', function(num) {
+        child1.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(1);
         });
-        child2.on('test', function(num) {
+        child2.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(2);
         });
 
-        composite.capture('test', 123);
-
-        expect(ret).to.eql([0, 1, 2]);
+        composite.capture('test', 123, function() {
+            expect(ret).to.eql([0, 1, 2]);
+        });
     });
 
     it('removeChild([instance])は子供を削除する。instanceを省略した場合、すべての子供を削除する。', function() {
@@ -254,29 +258,29 @@ describe('Compositeは', function() {
         composite.addChild(child1);
         child1.addChild(child2);
 
-        composite.on('test', function(num) {
+        composite.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(0);
         });
-        child1.on('test', function(num) {
+        child1.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(1);
         });
-        child2.on('test', function(num) {
+        child2.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(2);
         });
 
         composite.removeChild(child1);
 
-        child2.emit('test', 123);
+        child2.emit('test', 123, function() {
+            expect(ret).to.eql([2, 1]);
 
-        expect(ret).to.eql([2, 1]);
+            child1.removeChild();
+            child2.emit('test', 123);
 
-        child1.removeChild();
-        child2.emit('test', 123);
-
-        expect(ret).to.eql([2, 1, 2]);
+            expect(ret).to.eql([2, 1, 2]);
+        });
     });
 
     it('only()は親、子にイベントを伝播せず実行する', function() {
@@ -287,22 +291,22 @@ describe('Compositeは', function() {
         composite.addChild(child1);
         child1.addChild(child2);
 
-        composite.on('test', function(num) {
+        composite.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(0);
         });
-        child1.on('test', function(num) {
+        child1.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(1);
         });
-        child2.on('test', function(num) {
+        child2.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(2);
         });
 
-        child2.only('test', 123);
-
-        expect(ret).to.eql([2]);
+        child2.only('test', 123, function() {
+            expect(ret).to.eql([2]);
+        });
     });
 
     it('on(event, func)で登録したfuncの引数の最後に追加して渡される値はeventオブジェクトである。', function() {
@@ -313,37 +317,38 @@ describe('Compositeは', function() {
         composite.addChild(child1);
         child1.addChild(child2);
 
-        composite.on('test', function(num) {
+        composite.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(0);
         });
-        composite.on('test', function(num, ev) {
+        composite.on('test', function(ev, num) {
             ev.preventDefault();
             ret.push(1);
         });
-        child1.on('test', function(num) {
+        child1.on('test', function(ev, num) {
             expect(num).to.be(123);
             ret.push(2);
         });
-        child2.on('test', function(num, ev) {
+        child2.on('test', function(ev, num) {
             ev.stopPropagation();
 
             expect(num).to.be(123);
             ret.push(3);
         });
-        child2.on('test', function(num, ev) {
+        child2.on('test', function(ev, num) {
             ev.stopPropagation();
 
             expect(num).to.be(123);
             ret.push(4);
         });
 
-        child2.emit('test', 123);
-        expect(ret).to.eql([4, 3]);
+        child2.emit('test', 123, function() {
+            expect(ret).to.eql([4, 3]);
 
-        ret = [];
+            ret = [];
 
-        composite.capture('test', 123);
-        expect(ret).to.eql([1, 2, 4, 3]);
+            composite.capture('test', 123);
+            expect(ret).to.eql([1, 2, 4, 3]);
+        });
     });
 });

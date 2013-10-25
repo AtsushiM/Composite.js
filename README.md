@@ -13,14 +13,14 @@ var composite = new Composite;
 
 ### インスタンスにイベントを登録する
 ```javascript
-composite.on('event-name', function(arg1, arg2, arg3) {
+composite.on('event-name', function(e, arg) {
     // write code.
 });
 ```
 
 ### インスタンスに一度だけ実行されるイベントを登録する
 ```javascript
-var eventaction = function(arg1, arg2, arg3) {
+var eventaction = function(e, arg) {
         // write code.
     };
 composite.one('event-name', eventaction);
@@ -38,7 +38,9 @@ composite.off('event-name');
 
 ### インスタンスに登録されたイベントを実行する
 ```javascript
-composite.emit('event-name', arg1, arg2, arg3);
+composite.emit('event-name', arg, function() {
+    // callback.
+});
 ```
 
 ### イベント伝播の対象を登録する
@@ -85,24 +87,24 @@ composite_parent.capture('event-capture');
 
 ### イベントの伝播を停止する
 ```javascript
-composite_child.on('event-propagation', function(num1, num2, num3, e) {
+composite_child.on('event-propagation', function(e) {
     e.stopPropagation();
 });
-composite_parent.on('event-propagation', function(num1, num2, num3, e) {
+composite_parent.on('event-propagation', function(e) {
     // don't execute.
 });
-composite_child.emit('event-propagation', 1, 2, 3);
+composite_child.emit('event-propagation');
 ```
 
 ### 実行中のイベント以前に同じイベントに登録された関数の実行を停止する
 ```javascript
-composite.on('event-default', function(num, e) {
+composite.on('event-default', function(e) {
     // don't execute.
 });
-composite.on('event-default', function(num, e) {
+composite.on('event-default', function(e) {
     e.preventDefault();
 });
-composite.emit('event-default', 1);
+composite.emit('event-default');
 ```
 
 ### イベントを伝播させずに実行する
@@ -132,8 +134,3 @@ var ExtendComposite = Composite.extend({
         },
     });
 ```
-
-## More
-このライブラリはCIR.jsのC.Ompositeを切り出したものです。
-
-http://atsushim.github.io/cir.js/#Omposite
